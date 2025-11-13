@@ -1,58 +1,58 @@
--- Archivo DDL: 01_create_tables.sql
--- Propósito: Creación de la base de datos para los microservicios de Productos e Inventario.
--- Tecnología: MySQL (Motor InnoDB para transacciones y FKs)
+-- DDL File: 01_create_tables.sql
+-- Purpose: Database schema creation for Products and Inventory microservices.
+-- Technology: MySQL (InnoDB Engine for transactions and FKs)
 
--- Establecer el conjunto de caracteres y el motor de almacenamiento
+-- Set character set and storage engine
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- --------------------------------------------------------
--- TABLA: productos (Microservicio Productos)
+-- TABLE: products (Managed by Products Microservice)
 -- --------------------------------------------------------
-DROP TABLE IF EXISTS `productos`;
-CREATE TABLE `productos` (
-  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del producto (PK)',
-  `nombre` VARCHAR(255) NOT NULL COMMENT 'Nombre del producto',
-  `descripcion` TEXT COMMENT 'Descripción detallada del producto',
-  `precio` DECIMAL(10, 2) NOT NULL COMMENT 'Precio unitario (mayor a 0)',
-  `activo` TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Estado del producto (1=Activo, 0=Inactivo - Soft Delete)',
-  `creado_en` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de creación del registro',
-  `actualizado_en` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Fecha de la última actualización',
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE `products` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Unique product identifier (PK)',
+  `name` VARCHAR(255) NOT NULL COMMENT 'Product name',
+  `description` TEXT COMMENT 'Detailed product description',
+  `price` DECIMAL(10, 2) NOT NULL COMMENT 'Unit price (must be greater than 0)',
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Product status (1=Active, 0=Inactive - Soft Delete)',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Record creation date',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Date of the last update',
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_unique_nombre` (`nombre`), -- Previene productos con el mismo nombre
-  KEY `idx_activo` (`activo`),             -- Optimiza la paginación de productos activos
+  UNIQUE KEY `idx_unique_name` (`name`), -- Prevents products with the same name
+  KEY `idx_is_active` (`is_active`),     -- Optimizes active product listing/pagination
 
-  -- Restricción para asegurar que el precio sea un valor positivo
-  CONSTRAINT `chk_precio_positivo` CHECK (`precio` > 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Gestiona la información base de los productos.';
+  -- Constraint to ensure price is a positive value
+  CONSTRAINT `chk_price_positive` CHECK (`price` > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Manages the core product information.';
 
 
 -- --------------------------------------------------------
--- TABLA: inventarios (Microservicio Inventario)
+-- TABLE: inventory (Managed by Inventory Microservice)
 -- --------------------------------------------------------
-DROP TABLE IF EXISTS `inventarios`;
-CREATE TABLE `inventarios` (
-  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del registro de inventario (PK)',
-  `producto_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID del producto al que pertenece este inventario (FK)',
-  `cantidad_disponible` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Cantidad de stock disponible',
-  `ubicacion` VARCHAR(100) COMMENT 'Ubicación física del stock (ej: Almacén A)',
-  `ultima_actualizacion_inv` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Marca de tiempo para el evento de cambio de stock',
+DROP TABLE IF EXISTS `inventory`;
+CREATE TABLE `inventory` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Unique inventory record identifier (PK)',
+  `product_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID of the product this inventory belongs to (FK)',
+  `available_stock` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Available stock quantity',
+  `location` VARCHAR(100) COMMENT 'Physical stock location (e.g., Warehouse A)',
+  `last_inventory_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp for stock change event emission',
 
   PRIMARY KEY (`id`),
-  -- UNIQUE KEY: Esta restricción fuerza la relación 1:1 (un solo registro de inventario por producto)
-  UNIQUE KEY `idx_unique_producto_id` (`producto_id`),
+  -- UNIQUE KEY: This constraint enforces the 1:1 relationship (only one inventory record per product)
+  UNIQUE KEY `idx_unique_product_id` (`product_id`),
   
-  -- Clave Foránea: Vincula el inventario al producto
-  CONSTRAINT `fk_inventarios_producto` 
-    FOREIGN KEY (`producto_id`) 
-    REFERENCES `productos` (`id`) 
-    ON DELETE CASCADE  -- Si se borra el producto, se borra su inventario
-    ON UPDATE CASCADE, -- Si se actualiza el ID del producto, se actualiza en el inventario
+  -- Foreign Key: Links inventory to the product
+  CONSTRAINT `fk_inventory_product` 
+    FOREIGN KEY (`product_id`) 
+    REFERENCES `products` (`id`) 
+    ON DELETE CASCADE  -- If the product is deleted, its inventory record is also deleted
+    ON UPDATE CASCADE, -- If the product ID is updated, it is updated in the inventory
     
-  -- Restricción para asegurar que el stock no sea negativo
-  CONSTRAINT `chk_cantidad_no_negativa` CHECK (`cantidad_disponible` >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Gestiona el stock y la cantidad disponible de productos.';
+  -- Constraint to ensure stock is non-negative
+  CONSTRAINT `chk_stock_non_negative` CHECK (`available_stock` >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Manages product stock and available quantity.';
 
--- Restaurar el chequeo de claves foráneas
+-- Restore foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;

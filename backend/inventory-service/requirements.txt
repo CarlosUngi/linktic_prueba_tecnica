@@ -1,0 +1,8 @@
+Flask
+python-dotenv
+PyMySQL
+structlog
+requests
+marshmallow
+pytest
+pytest-cov

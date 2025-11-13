@@ -2,3 +2,7 @@
 /storage
 /logs
 /database/data
+
+.venv
+__pycache__
+logs

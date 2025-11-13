@@ -1,0 +1,152 @@
+# Documentación OpenAPI 3.0 para Products-Service
+# Versión: /api/v1
+
+openapi: 3.0.0
+info:
+  title: Products Service API
+  version: 1.0.0
+  description: CRUD simple para la gestión de la información base de productos, siguiendo el estándar JSON API.
+  contact:
+    name: Líder Técnico - [Tu Nombre]
+
+servers:
+  - url: http://localhost:8001/api/v1
+    description: URL principal del microservicio
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key # Header requerido para Inventory-Service
+
+  schemas:
+    ProductoResource:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único del producto.
+        type:
+          type: string
+          example: productos
+        attributes:
+          type: object
+          properties:
+            nombre:
+              type: string
+            descripcion:
+              type: string
+            precio:
+              type: number
+              format: float
+              minimum: 0.01
+
+paths:
+  /productos:
+    get:
+      summary: Lista productos con paginación.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de recursos de productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      : '#/components/schemas/ProductoResource'
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+        '500':
+          description: Error interno del servidor.
+
+    post:
+      summary: Crea un nuevo producto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Camisa Polo Roja
+                precio:
+                  type: number
+                  example: 25.99
+                descripcion:
+                  type: string
+      responses:
+        '201':
+          description: Producto creado exitosamente.
+        '401':
+          description: Acceso no autorizado (API Key inválida/faltante).
+        '422':
+          description: Error de validación (JSON API).
+
+  /productos/{id}:
+    get:
+      summary: Obtiene un producto por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recurso de producto individual.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    : '#/components/schemas/ProductoResource'
+        '404':
+          description: Producto no encontrado.
+        '401':
+          description: Acceso no autorizado (API Key inválida/faltante).
+
+    delete:
+      summary: Elimina (Soft Delete) un producto por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Eliminación exitosa (No Content).
+        '404':
+          description: Producto no encontrado.
+        '401':
+          description: Acceso no autorizado (API Key inválida/faltante).

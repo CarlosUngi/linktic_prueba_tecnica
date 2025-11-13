@@ -1,0 +1,32 @@
+{
+  "INVALID_INPUT_DATA": {
+    "status": 400,
+    "title": "Datos de entrada inválidos",
+    "detail": "Uno o más campos en la solicitud tienen un formato o valor incorrecto."
+  },
+  "UNAUTHORIZED_ACCESS": {
+    "status": 401,
+    "title": "Acceso No Autorizado",
+    "detail": "La API Key proporcionada es incorrecta o falta el header X-API-Key."
+  },
+  "RESOURCE_NOT_FOUND": {
+    "status": 404,
+    "title": "Recurso No Encontrado",
+    "detail": "El ID de inventario o producto no existe."
+  },
+  "INVENTORY_NOT_AVAILABLE": {
+    "status": 409,
+    "title": "Stock Insuficiente",
+    "detail": "La cantidad solicitada supera la cantidad disponible en el inventario."
+  },
+  "SERVICE_UNAVAILABLE": {
+    "status": 503,
+    "title": "Servicio Dependiente No Disponible",
+    "detail": "El Products Service no respondió o falló después de múltiples reintentos."
+  },
+  "INTERNAL_SERVER_ERROR": {
+    "status": 500,
+    "title": "Error Interno del Servidor",
+    "detail": "Ocurrió un error inesperado. El incidente ha sido registrado."
+  }
+}
