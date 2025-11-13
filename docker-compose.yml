@@ -13,9 +13,9 @@ services:
     ports:
       # Exponer el puerto de MySQL al host (opcional, útil para herramientas externas)
       - "3306:3306"
-    #volumes:
-    #  - ./database/data:/var/lib/mysql
-    #  - ./database/init:/docker-entrypoint-initdb.d
+    volumes:
+      - ./database/data:/var/lib/mysql:z
+      - ./database/init:/docker-entrypoint-initdb.d:z
     networks:
       # Asigna el servicio a la red interna para la comunicación con los microservicios.
       - linktick_network
