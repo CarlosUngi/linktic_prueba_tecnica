@@ -1,0 +1,1 @@
+git remote add origin https://github.com/CarlosUngi/linktic_prueba_tecnica.git

@@ -1,0 +1,33 @@
+services:
+  # 1. SERVICIO DE BASE DE DATOS (MYSQL)
+  mysql_db:
+    image: mysql:8.0
+    container_name: db_mysql
+    restart: always
+    environment:
+      # Las credenciales son tomadas de forma segura desde el archivo .env
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      # Exponer el puerto de MySQL al host (opcional, útil para herramientas externas)
+      - "3306:3306"
+    #volumes:
+    #  - ./database/data:/var/lib/mysql
+    #  - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      # Asigna el servicio a la red interna para la comunicación con los microservicios.
+      - linktick_network
+  
+  # 2. MICROSERVICIO DE PRODUCTOS (Node.js/Express)
+  # products-service:
+  #   ... (Este servicio está comentado y se agregará más tarde)
+
+# ===================================================
+# DEFINICIÓN DE REDES Y VOLÚMENES
+# ===================================================
+networks:
+  # Red interna compartida por todos los microservicios (Backend y DB)
+  linktick_network:
+    driver: bridge
