@@ -13,6 +13,14 @@
         h2 { border-bottom: 2px solid #dcfce7; padding-bottom: 0.5rem; }
         th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #f3f4f6; }
         th { background-color: #ecfdf5; font-weight: 600; }
+        .alert-note {
+            background-color: #fef3c7; /* yellow-100 */
+            border-left: 4px solid #d97706; /* amber-700 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8">
@@ -37,7 +45,16 @@
 
         <section id="alcance" class="mb-8">
             <h2 class="text-2xl font-semibold text-green-800 mb-4">I. Alcance de la Cobertura</h2>
-            <div class="overflow-x-auto">
+            
+            <div class="alert-note">
+                <p class="font-bold text-amber-700 flex items-center mb-1">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 mr-2"></i>
+                    NOTA IMPORTANTE SOBRE EL FRONTEND
+                </p>
+                <p>Debido a las restricciones de tiempo de la entrega, **las pruebas unitarias y de integración del Frontend (Angular) no pudieron ser implementadas**. La cobertura se centró exclusivamente en el Backend (80%). La Sección III contiene la estrategia planificada para estas pruebas.</p>
+            </div>
+            
+            <div class="overflow-x-auto mt-4">
                 <table class="min-w-full">
                     <thead>
                         <tr><th>Componente</th><th>Nivel Mínimo de Cobertura</th><th>Énfasis</th></tr>
@@ -68,8 +85,9 @@
 
         <section id="frontend" class="mb-8">
             <h2 class="text-2xl font-semibold text-green-800 mb-4">III. Estrategia de Pruebas del Frontend (Angular)</h2>
+            <p class="text-gray-700 mb-4">Esta sección describe la estrategia planificada que se implementará en una fase posterior para alcanzar la cobertura del 30%-40%.</p>
             <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
-                <li>**Servicios:** Usar `HttpClient Testing Module` para **Mockear las llamadas HTTP** y probar la transformación de datos.</li>
+                <li>**Servicios:** Usar <code>HttpClient Testing Module</code> para **Mockear las llamadas HTTP** y probar la transformación de datos.</li>
                 <li>**Middleware/Interceptors:** Probar que manejan errores 401 (redirección) o añaden headers de autenticación.</li>
                 <li>**Componentes:** **Mockear Servicios y Data** para probar la interacción de usuario (estados de *loading*, eventos).</li>
             </ul>
@@ -78,8 +96,8 @@
         <section id="entrega" class="mb-8">
             <h2 class="text-2xl font-semibold text-green-800 mb-4">IV. Entrega de Resultados (Evidencia)</h2>
             <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
-                <li>**Generación de Reporte:** El *framework* debe generar un reporte HTML (`lcov`).</li>
-                <li>**Ubicación:** Guardar en el directorio **`test_results/`**.</li>
+                <li>**Generación de Reporte:** El *framework* debe generar un reporte HTML (<code>lcov</code>).</li>
+                <li>**Ubicación:** Guardar en el directorio **<code>test_results/</code>**.</li>
             </ul>
         </section>
     </div>

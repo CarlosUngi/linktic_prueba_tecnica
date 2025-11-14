@@ -20,6 +20,13 @@
             border-radius: 0.5rem;
             margin-bottom: 1.5rem;
         }
+        .volume-detail {
+            background-color: #f0fdf4; /* green-50 */
+            border-left: 4px solid #10b981; /* emerald-500 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8">
@@ -32,7 +39,7 @@
             <p class="text-gray-500">Marco de diseño y organización del proyecto de microservicios (Productos e Inventario).</p>
         </header>
 
-        <!-- Nueva Sección de Swagger/Documentación API -->
+        <!-- Sección de Swagger/Documentación API -->
         <div class="swagger-callout">
             <h3 class="text-xl font-bold text-sky-800 mb-2 flex items-center">
                 <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
@@ -44,7 +51,7 @@
                 <li>**Productos:** <a href="http://localhost:8001/swagger-products/" target="_blank" class="underline hover:text-sky-600">http://localhost:8001/swagger-products/</a></li>
             </ul>
         </div>
-        <!-- Fin Nueva Sección -->
+        <!-- Fin Sección Swagger -->
 
         <nav class="mb-8 p-4 bg-blue-50 rounded-lg text-sm">
             <h3 class="font-semibold text-blue-700 mb-2">Contenidos</h3>
@@ -52,7 +59,7 @@
                 <li><a href="#vision" class="hover:text-blue-600">I. Visión General</a></li>
                 <li><a href="#stack" class="hover:text-blue-600">II. Stack Tecnológico (Políglota)</a></li>
                 <li><a href="#patrones" class="hover:text-blue-600">III. Patrones de Diseño Centrales</a></li>
-                <li><a href="#estructura" class="hover:text-blue-600">IV. Estructura de Directorios</a></li>
+                <li><a href="#estructura" class="hover:text-blue-600">IV. Estructura de Directorios y Volúmenes</a></li>
                 <li><a href="#resiliencia" class="hover:text-blue-600">V. Comunicación y Resiliencia</a></li>
                 <li><a href="#escalabilidad" class="hover:text-blue-600">VI. Propuesta de Escalabilidad</a></li>
             </ul>
@@ -106,7 +113,7 @@
         </section>
 
         <section id="estructura" class="mb-8">
-            <h2 class="text-2xl font-semibold text-blue-800 mb-4">IV. Estructura y Organización de Directorios</h2>
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">IV. Estructura de Directorios y Volúmenes </h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
@@ -116,10 +123,21 @@
                         <tr><td><code>docker-compose.yml</code></td><td>Define y orquesta la ejecución de todos los servicios.</td></tr>
                         <tr><td><code>.env</code></td><td>Almacena variables de entorno sensibles y de configuración global.</td></tr>
                         <tr><td><code>backend/middleware/</code></td><td>Contiene funciones de pre/post-procesamiento (Autenticación, Logging, Reintentos).</td></tr>
-                        <tr><td><code>logs/</code></td><td>Destino de los logs estructurados generados.</td></tr>
+                        <tr><td><code>logs/</code></td><td>Destino de los logs estructurados generados por los microservicios.</td></tr>
                         <tr><td><code>test_results/</code></td><td>Almacena los reportes de cobertura de pruebas (`lcov`).</td></tr>
                     </tbody>
                 </table>
+            </div>
+            
+            <div class="volume-detail">
+                <h3 class="text-xl font-bold text-green-800 mb-2 flex items-center">
+                    <i data-lucide="save" class="w-5 h-5 mr-2"></i>
+                    Gestión de Persistencia con Volúmenes
+                </h3>
+                <ul class="list-disc list-inside ml-4 text-gray-700 space-y-2">
+                    <li>**Base de Datos (MySQL):** Se utilizan volúmenes para asegurar la **persistencia** de la data de la base de datos (evitando su pérdida al detener el contenedor) y para alojar los **scripts iniciales** a ejecutarse durante el primer arranque del contenedor (ej. `init.sql`).</li>
+                    <li>**Logs:** La carpeta <code>/logs</code> en la raíz del proyecto está conectada mediante un volumen al host. Esto garantiza que los registros diarios de logs (<code>YYYY-MM-DD.log</code>) se escriban y persistan fuera del contenedor del microservicio, facilitando su consulta y análisis post-mortem.</li>
+                </ul>
             </div>
         </section>
 
