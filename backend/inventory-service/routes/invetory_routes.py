@@ -6,8 +6,6 @@ from logic.inventory_logic import InventoryService
 from exceptions.api_exceptions import InvalidInputError
 
 # ----------------- INYECCIÓN DE DEPENDENCIAS -----------------
-# Se instancian las dependencias que se inyectarán en las rutas.
-# En una aplicación más grande, esto se manejaría con un contenedor de inyección de dependencias.
 db_connection = DBConnection()
 inventory_repository = InventoryRepository(db_connection)
 inventory_service = InventoryService(inventory_repository)
@@ -24,8 +22,25 @@ inventory_bp = Blueprint(
 @inventory_bp.route('/', methods=['POST'])
 def create_inventory_route():
     """
-    Endpoint para crear un nuevo registro de inventario.
-    Espera un JSON con 'product_id' y 'available_stock'.
+    Create a new inventory item.
+    ---
+    tags:
+      - Inventory
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/InventoryItem'
+    responses:
+      201:
+        description: Inventory item created successfully.
+        schema:
+          $ref: '#/definitions/InventoryItem'
+      400:
+        description: Invalid input.
+        schema:
+          $ref: '#/definitions/Error'
     """
     data = request.get_json()
     if not data or 'product_id' not in data or 'available_stock' not in data:
@@ -33,7 +48,7 @@ def create_inventory_route():
 
     product_id = data.get('product_id')
     available_stock = data.get('available_stock')
-    location = data.get('location') # Opcional
+    location = data.get('location')
 
     new_inventory = inventory_service.create_new_inventory(product_id, available_stock, location)
     
@@ -49,7 +64,25 @@ def create_inventory_route():
 @inventory_bp.route('/<int:product_id>', methods=['GET'])
 def get_inventory_route(product_id: int):
     """
-    Endpoint para obtener el inventario de un producto por su ID.
+    Get inventory by product ID.
+    ---
+    tags:
+      - Inventory
+    parameters:
+      - in: path
+        name: product_id
+        type: integer
+        required: true
+        description: The ID of the product to retrieve inventory for.
+    responses:
+      200:
+        description: Inventory item found.
+        schema:
+          $ref: '#/definitions/InventoryItem'
+      404:
+        description: Inventory not found.
+        schema:
+          $ref: '#/definitions/Error'
     """
     inventory = inventory_service.get_inventory_for_product(product_id)
     return jsonify({
@@ -64,8 +97,38 @@ def get_inventory_route(product_id: int):
 @inventory_bp.route('/<int:product_id>/stock', methods=['PUT'])
 def update_stock_route(product_id: int):
     """
-    Endpoint para actualizar el stock de un producto.
-    Espera un JSON con 'new_stock'.
+    Update stock for a product.
+    ---
+    tags:
+      - Inventory
+    parameters:
+      - in: path
+        name: product_id
+        type: integer
+        required: true
+        description: The ID of the product to update stock for.
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            new_stock:
+              type: integer
+              description: The new stock quantity.
+    responses:
+      200:
+        description: Stock updated successfully.
+        schema:
+          $ref: '#/definitions/InventoryItem'
+      400:
+        description: Invalid input.
+        schema:
+          $ref: '#/definitions/Error'
+      404:
+        description: Inventory not found.
+        schema:
+          $ref: '#/definitions/Error'
     """
     data = request.get_json()
     if not data or 'new_stock' not in data:
@@ -81,7 +144,23 @@ def update_stock_route(product_id: int):
 @inventory_bp.route('/<int:product_id>', methods=['DELETE'])
 def delete_inventory_route(product_id: int):
     """
-    Endpoint para eliminar el inventario de un producto.
+    Delete inventory for a product.
+    ---
+    tags:
+      - Inventory
+    parameters:
+      - in: path
+        name: product_id
+        type: integer
+        required: true
+        description: The ID of the product to delete inventory for.
+    responses:
+      204:
+        description: Inventory deleted successfully.
+      404:
+        description: Inventory not found.
+        schema:
+          $ref: '#/definitions/Error'
     """
     inventory_service.delete_inventory_for_product(product_id)
     return Response(status=204)

@@ -1,0 +1,35 @@
+swagger: '2.0'
+info:
+  title: Inventory API
+  description: API for managing inventory
+  version: 1.0.0
+host: localhost:8000
+basePath: /api/v1
+schemes:
+  - http
+paths: {}
+definitions:
+  InventoryItem:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: The unique identifier of the inventory item.
+      product_id:
+        type: integer
+        description: The ID of the product.
+      available_stock:
+        type: integer
+        description: The available stock of the product.
+      location:
+        type: string
+        description: The location of the product in the inventory.
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+        description: The error code.
+      message:
+        type: string
+        description: A human-readable error message.
