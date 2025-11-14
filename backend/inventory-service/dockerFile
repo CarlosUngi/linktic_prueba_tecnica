@@ -1,0 +1,65 @@
+# --------------------
+# ETAPA 1: BUILD & TEST
+# --------------------
+# Usa una imagen base robusta para la compilación y pruebas. 
+# python:3.11-slim-buster es una opción ligera y estable.
+FROM python:3.11-slim-buster AS builder
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Instala dependencias de sistema necesarias si las hubiera (e.g., para PyMySQL si usa bibliotecas C)
+# En este caso, no son estrictamente necesarias para PyMySQL puro, pero es una buena práctica.
+
+# Copia los archivos de configuración
+COPY requirements.txt .
+COPY pytest.ini .
+
+# Instala las dependencias de Python
+# El flag --no-cache-dir reduce el tamaño de la capa de caché de pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia el código fuente completo, incluyendo tests y configuraciones
+COPY . .
+
+# CRÍTICO: Ejecutar pruebas unitarias y generar el reporte HTML de cobertura
+# Si las pruebas fallan, la construcción de Docker fallará, asegurando que solo se despliegue código testeado.
+# Nota: La ejecución de Pytest funciona ahora debido a la configuración de pythonpath en pytest.ini.
+RUN pytest
+
+# --------------------
+# ETAPA 2: PRODUCTION (Runtime)
+# --------------------
+# Usa una imagen base más pequeña para el entorno de ejecución
+FROM python:3.11-slim-buster AS production
+
+# Establece variables de entorno que no son secretas
+ENV PYTHONUNBUFFERED 1
+ENV FLASK_APP=app.py
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Instala SÓLO las dependencias de runtime (excluyendo pytest y coverage)
+# Reinstalamos solo las librerías necesarias para ejecutar la app.
+COPY requirements.txt .
+RUN pip install --no-cache-dir gunicorn Flask PyMySQL requests marshmallow python-dotenv structlog dbutils cryptography
+
+# Copia solo los archivos esenciales para la ejecución (código limpio, sin tests)
+COPY --from=builder /app/app.py app.py
+COPY --from=builder /app/config config/
+COPY --from=builder /app/db db/
+COPY --from=builder /app/logic logic/
+COPY --from=builder /app/middleware middleware/
+COPY --from=builder /app/models models/
+COPY --from=builder /app/routes routes/
+COPY --from=builder /app/exceptions exceptions/
+
+# Crea el directorio para los logs, ya que se usará como volumen de Docker Compose
+RUN mkdir /app/logs
+
+# Define el puerto que la aplicación Flask usará
+EXPOSE 8000
+
+# Comando para iniciar la aplicación con Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:create_app()"]

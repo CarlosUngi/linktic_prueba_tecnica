@@ -18,11 +18,38 @@ services:
       - ./database/init:/docker-entrypoint-initdb.d:z
     networks:
       - linktick_network
+    healthcheck:
+      # Comando para verificar si MySQL está listo para aceptar conexiones
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   # 2. MICROSERVICIO DE PRODUCTOS (Node.js/Express)
   # products-service:
   #   ... (Este servicio está comentado y se agregará más tarde)
 
+  # 3. MICROSERVICIO DE INVENTARIO (Python/Flask)
+  inventory-service:
+    build:
+      context: ./backend/inventory-service
+      dockerfile: dockerFile
+    container_name: inventory_service
+    restart: always
+    env_file:
+      - .env
+    environment:
+      # Sobrescribe el host de la BD para que apunte al servicio de Docker
+      - DB_HOST=mysql_db
+    ports:
+      # Mapea el puerto del host al puerto del contenedor
+      - "8000:8000"
+    depends_on:
+      mysql_db:
+        # Espera a que el healthcheck de la BD sea exitoso antes de iniciar
+        condition: service_healthy
+    networks:
+      - linktick_network
 # ===================================================
 # DEFINICIÓN DE REDES Y VOLÚMENES
 # ===================================================
