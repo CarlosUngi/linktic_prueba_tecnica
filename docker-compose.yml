@@ -30,7 +30,7 @@ services:
   products-service:
     build:
       context: ./backend/products-service
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: products_service
     restart: always
     env_file:
@@ -52,6 +52,7 @@ services:
     build:
       context: ./backend/products-service
       dockerfile: Dockerfile
+      target: builder
     container_name: products_service_tests
     env_file:
       - .env
@@ -69,7 +70,7 @@ services:
   inventory-service:
     build:
       context: ./backend/inventory-service
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: inventory_service
     restart: always
     env_file:
@@ -92,6 +93,7 @@ services:
     build:
       context: ./backend/inventory-service
       dockerfile: Dockerfile
+      target: builder
     container_name: inventory_service_tests
     # No usamos 'restart: always' porque este contenedor solo debe correr una vez.
     env_file:
@@ -110,7 +112,7 @@ services:
   frontend-service:
     build:
       context: ./frontend/products-manage
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: frontend_service
     restart: always
     ports:
