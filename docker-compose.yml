@@ -117,7 +117,7 @@ services:
     restart: always
     ports:
       # Mapea el puerto 80 del contenedor al puerto 4200 del host
-      - "4200:80"
+      - "4300:80"
     depends_on:
       - products-service
       - inventory-service

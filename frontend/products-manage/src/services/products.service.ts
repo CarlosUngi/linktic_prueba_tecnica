@@ -9,7 +9,7 @@ import { ProductWithStock, CreateProductDTO, UpdateProductDTO } from '../models/
 export class ProductsService {
 
   // La URL base utiliza el proxy configurado en proxy.json
-  private apiUrl = 'localhost:8001/api/v1/productos';
+  private apiUrl = '/product-services/api/v1/productos';
 
   // La API Key necesaria para las operaciones de escritura (POST, PUT, DELETE)
   // En un proyecto real, esto debería venir de una variable de entorno.
