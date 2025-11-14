@@ -107,7 +107,7 @@ def register_error_handlers(app: Flask) -> None:
         response_body = build_json_api_error(
             status_code=error.status_code,
             error_code=error.error_code,
-            title=error.get('message', 'Error sin detalle.'),
+            title=error.error_code,
             detail=error.detail
         )
         return jsonify(response_body), error.status_code
