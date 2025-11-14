@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia de Pruebas y Cobertura (80% Backend)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); }
+        h2 { border-bottom: 2px solid #dcfce7; padding-bottom: 0.5rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #f3f4f6; }
+        th { background-color: #ecfdf5; font-weight: 600; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl card">
+        <header class="mb-8 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center mb-1">
+                <i data-lucide="test-tube" class="w-6 h-6 mr-3 text-green-600"></i>
+                Estrategia de Pruebas y Cobertura (80% Backend)
+            </h1>
+            <p class="text-gray-500">Detalle de la estrategia de pruebas automatizadas y metas de cobertura.</p>
+        </header>
+
+        <nav class="mb-8 p-4 bg-green-50 rounded-lg text-sm">
+            <h3 class="font-semibold text-green-700 mb-2">Contenidos</h3>
+            <ul class="list-none space-y-1">
+                <li><a href="#alcance" class="hover:text-green-600">I. Alcance de la Cobertura</a></li>
+                <li><a href="#backend" class="hover:text-green-600">II. Estrategia de Pruebas del Backend</a></li>
+                <li><a href="#frontend" class="hover:text-green-600">III. Estrategia de Pruebas del Frontend</a></li>
+                <li><a href="#entrega" class="hover:text-green-600">IV. Entrega de Resultados (Evidencia)</a></li>
+            </ul>
+        </nav>
+
+        <section id="alcance" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-800 mb-4">I. Alcance de la Cobertura</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr><th>Componente</th><th>Nivel Mínimo de Cobertura</th><th>Énfasis</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>**Backend (P & I)**</td><td>**80%** de Cobertura de Rama y Línea (Pytest / Jest).</td><td>Pruebas de Integración y Resiliencia.</td></tr>
+                        <tr><td>**Frontend (Angular)**</td><td>30%-40% (Karma & Jasmine).</td><td>Servicios, Interceptors y manejo de estado.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="backend" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-800 mb-4">II. Estrategia de Pruebas del Backend</h2>
+            
+            <h3 class="text-xl font-semibold mt-4 mb-2 text-gray-700">1. Pruebas Unitarias (Mocking)</h3>
+            <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
+                <li>**`logic/` (Servicio):** **Mockear el Repositorio**. Caso Crítico: Probar flujo de "compra" y lanzamiento de <code>INVENTORY_NOT_AVAILABLE</code> si hay stock insuficiente.</li>
+                <li>**`middleware/` (Auth y Logs):** **Mockear `req/res/next`**. Caso Crítico: Retornar <code>UNAUTHORIZED_ACCESS (401)</code> si el <code>X-API-Key</code> es inválido.</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">2. Pruebas de Integración (Resiliencia)</h3>
+            <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
+                <li>**Comunicación Inter-Servicios:** **Mockear el cliente HTTP** para simular fallos temporales (Error 500) y validar la lógica de **Reintentos con Backoff Exponencial**.</li>
+                <li>**Contrato JSON API:** Verificar que todas las respuestas de éxito y error se adhieren estrictamente al formato JSON API.</li>
+            </ul>
+        </section>
+
+        <section id="frontend" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-800 mb-4">III. Estrategia de Pruebas del Frontend (Angular)</h2>
+            <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
+                <li>**Servicios:** Usar `HttpClient Testing Module` para **Mockear las llamadas HTTP** y probar la transformación de datos.</li>
+                <li>**Middleware/Interceptors:** Probar que manejan errores 401 (redirección) o añaden headers de autenticación.</li>
+                <li>**Componentes:** **Mockear Servicios y Data** para probar la interacción de usuario (estados de *loading*, eventos).</li>
+            </ul>
+        </section>
+        
+        <section id="entrega" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-800 mb-4">IV. Entrega de Resultados (Evidencia)</h2>
+            <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
+                <li>**Generación de Reporte:** El *framework* debe generar un reporte HTML (`lcov`).</li>
+                <li>**Ubicación:** Guardar en el directorio **`test_results/`**.</li>
+            </ul>
+        </section>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

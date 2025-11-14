@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia de Logging de Errores (Estructurado)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); }
+        h2 { border-bottom: 2px solid #fef3c7; padding-bottom: 0.5rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #f3f4f6; }
+        th { background-color: #fffbeb; font-weight: 600; }
+        pre { background-color: #27272a; color: #f4f4f5; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl card">
+        <header class="mb-8 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center mb-1">
+                <i data-lucide="file-text" class="w-6 h-6 mr-3 text-yellow-600"></i>
+                Estrategia de Logging de Errores (Estructurado)
+            </h1>
+            <p class="text-gray-500">Definición del formato y flujo de logs para asegurar consistencia y análisis.</p>
+        </header>
+
+        <nav class="mb-8 p-4 bg-yellow-50 rounded-lg text-sm">
+            <h3 class="font-semibold text-yellow-700 mb-2">Contenidos</h3>
+            <ul class="list-none space-y-1">
+                <li><a href="#requisito" class="hover:text-yellow-600">I. Requisito y Destino</a></li>
+                <li><a href="#json" class="hover:text-yellow-600">II. Formato Estructurado Interno (JSON)</a></li>
+                <li><a href="#texto" class="hover:text-yellow-600">III. Formato de Salida (Texto Plano)</a></li>
+                <li><a href="#flujo" class="hover:text-yellow-600">IV. Flujo de Implementación</a></li>
+            </ul>
+        </nav>
+
+        <section id="requisito" class="mb-8">
+            <h2 class="text-2xl font-semibold text-yellow-800 mb-4">I. Requisito y Destino</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr><th>Aspecto</th><th>Detalle</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>**Enfoque**</td><td>Logs de errores (Nivel <code>ERROR</code> y <code>CRITICAL</code>).</td></tr>
+                        <tr><td>**Destino**</td><td>Carpeta **<code>/logs</code>** en la raíz del proyecto.</td></tr>
+                        <tr><td>**Nombre de Archivo**</td><td>Archivo por día: <code>YYYY-MM-DD.log</code> (Ej. <code>2025-11-12.log</code>).</td></tr>
+                        <tr><td>**Integración**</td><td>Lógica implementada en un **Middleware** dedicado para errores 4xx/5xx.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="json" class="mb-8">
+            <h2 class="text-2xl font-semibold text-yellow-800 mb-4">II. Formato Estructurado Interno (Modelo JSON)</h2>
+            <p class="text-gray-700 mb-2">El *backend* construye el log como un objeto JSON para facilitar la integración con herramientas de monitoreo.</p>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr><th>Campo Clave</th><th>Propósito</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>timestamp</code></td><td>Fecha y hora exacta (ISO 8601).</td></tr>
+                        <tr><td><code>service</code></td><td>Nombre del microservicio que generó el error.</td></tr>
+                        <tr><td><code>trace_id</code></td><td>Identificador único de la petición HTTP.</td></tr>
+                        <tr><td><code>error_code</code></td><td>El código de error interno estandarizado.</td></tr>
+                        <tr><td><code>message</code></td><td>Mensaje de error detallado.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="texto" class="mb-8">
+            <h2 class="text-2xl font-semibold text-yellow-800 mb-4">III. Formato de Salida (Archivo de Texto Plano)</h2>
+            <p class="text-gray-700 mb-2">El objeto JSON se serializa a texto. **Ejemplo de Línea Final:**</p>
+            <pre><code>2025-11-12 19:00:00 products-service INVALID_INPUT_DATA /api/v1/products El precio no es un valor numérico válido.</code></pre>
+            <p class="text-sm text-gray-500 mt-2">Formato: Fecha | Hora | Servicio | Código_Error | URL_API | Mensaje_Detallado</p>
+        </section>
+
+        <section id="flujo" class="mb-8">
+            <h2 class="text-2xl font-semibold text-yellow-800 mb-4">IV. Flujo de Implementación</h2>
+            <ol class="list-decimal list-inside ml-4 space-y-2 text-gray-700">
+                <li>**Middleware de Error:** Captura cualquier excepción.</li>
+                <li>**Construcción JSON:** Se construye el objeto JSON dentro del manejador.</li>
+                <li>**Formateo a Texto:** El objeto JSON se serializa al formato de texto plano.</li>
+                <li>**Escritura a Disco:** La línea se escribe en el archivo <code>YYYY-MM-DD.log</code> en la carpeta <code>/logs</code>.</li>
+            </ol>
+        </section>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

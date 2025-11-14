@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice de Documentación Técnica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); }
+        h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-xl card">
+        <header class="mb-8 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center mb-1">
+                <i data-lucide="folder-open" class="w-6 h-6 mr-3 text-gray-600"></i>
+                Índice de Documentación Técnica
+            </h1>
+            <p class="text-gray-500">Acceso rápido a los documentos técnicos del proyecto.</p>
+        </header>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Documentos Disponibles</h2>
+            <ul class="list-disc list-inside ml-4 space-y-2 text-gray-700">
+                <li>
+                    <a href="arquitectura_guia_tecnica.html" class="text-blue-600 hover:underline flex items-center">
+                        <i data-lucide="trello" class="w-5 h-5 mr-2 text-blue-500"></i> Guía Técnica de Microservicios: Arquitectura
+                    </a>
+                </li>
+                <li>
+                    <a href="estrategia_autenticacion.html" class="text-red-600 hover:underline flex items-center">
+                        <i data-lucide="shield-check" class="w-5 h-5 mr-2 text-red-500"></i> Estrategia de Autenticación y Seguridad (API Key)
+                    </a>
+                </li>
+                <li>
+                    <a href="estrategia_pruebas_cobertura.html" class="text-green-600 hover:underline flex items-center">
+                        <i data-lucide="test-tube" class="w-5 h-5 mr-2 text-green-500"></i> Estrategia de Pruebas y Cobertura (80% Backend)
+                    </a>
+                </li>
+                <li>
+                    <a href="strategia_loggings.html" class="text-yellow-600 hover:underline flex items-center">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-2 text-yellow-500"></i> Estrategia de Logging de Errores (Estructurado)
+                    </a>
+                </li>
+                <li>
+                    <a href="variable_entorno.html" class="text-purple-600 hover:underline flex items-center">
+                        <i data-lucide="settings" class="w-5 h-5 mr-2 text-purple-500"></i> Guía de Variables de Entorno (Archivo .env)
+                    </a>
+                </li>
+                <li>
+                    <a href="guia_desarrollador.html" class="text-indigo-600 hover:underline flex items-center">
+                        <i data-lucide="code" class="w-5 h-5 mr-2 text-indigo-500"></i> Guía para Desarrolladores
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

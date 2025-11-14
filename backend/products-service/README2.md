@@ -83,7 +83,7 @@ products-service/
 
 La especificación de la API se encuentra en `swagger.yaml`. Una vez que el servicio esté corriendo (puerto `8001`), la documentación interactiva estará accesible en:
 
-  * **`http://localhost:8001/api-docs`**
+  * **`http://localhost:8001/swagger-products/`**
 
 ## 5. Estrategia de Pruebas (80% Cobertura)
 

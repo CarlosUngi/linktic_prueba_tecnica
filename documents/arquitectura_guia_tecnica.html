@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Técnica de Microservicios: Arquitectura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); }
+        h2 { border-bottom: 2px solid #e0e7ff; padding-bottom: 0.5rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #f3f4f6; }
+        th { background-color: #f1f5f9; font-weight: 600; }
+        .swagger-callout {
+            background-color: #e0f2fe; /* light-blue-100 */
+            border-left: 5px solid #0284c7; /* sky-600 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl card">
+        <header class="mb-8 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center mb-1">
+                <i data-lucide="trello" class="w-6 h-6 mr-3 text-blue-600"></i>
+                Canvas de Arquitectura y Guía Técnica
+            </h1>
+            <p class="text-gray-500">Marco de diseño y organización del proyecto de microservicios (Productos e Inventario).</p>
+        </header>
+
+        <!-- Nueva Sección de Swagger/Documentación API -->
+        <div class="swagger-callout">
+            <h3 class="text-xl font-bold text-sky-800 mb-2 flex items-center">
+                <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
+                Documentación de la API (Swagger/OpenAPI)
+            </h3>
+            <p class="text-sky-700 mb-2">Las API están documentadas y accesibles en los siguientes puertos del Host (<code>localhost</code>):</p>
+            <ul class="list-disc list-inside ml-4 font-mono text-sm text-sky-900 space-y-1">
+                <li>**Inventario:** <a href="http://localhost:8000/swagger-inventory/" target="_blank" class="underline hover:text-sky-600">http://localhost:8000/swagger-inventory/</a></li>
+                <li>**Productos:** <a href="http://localhost:8001/swagger-products/" target="_blank" class="underline hover:text-sky-600">http://localhost:8001/swagger-products/</a></li>
+            </ul>
+        </div>
+        <!-- Fin Nueva Sección -->
+
+        <nav class="mb-8 p-4 bg-blue-50 rounded-lg text-sm">
+            <h3 class="font-semibold text-blue-700 mb-2">Contenidos</h3>
+            <ul class="list-none space-y-1">
+                <li><a href="#vision" class="hover:text-blue-600">I. Visión General</a></li>
+                <li><a href="#stack" class="hover:text-blue-600">II. Stack Tecnológico (Políglota)</a></li>
+                <li><a href="#patrones" class="hover:text-blue-600">III. Patrones de Diseño Centrales</a></li>
+                <li><a href="#estructura" class="hover:text-blue-600">IV. Estructura de Directorios</a></li>
+                <li><a href="#resiliencia" class="hover:text-blue-600">V. Comunicación y Resiliencia</a></li>
+                <li><a href="#escalabilidad" class="hover:text-blue-600">VI. Propuesta de Escalabilidad</a></li>
+            </ul>
+        </nav>
+
+        <section id="vision" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">I. Visión General del Proyecto</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr><th>Elemento</th><th>Descripción</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>**Objetivo**</td><td>Desarrollar una solución completa con API de microservicios y frontend, cumpliendo estándares de Líder Técnico.</td></tr>
+                        <tr><td>**Estándar de Comunicación**</td><td>**JSON API (v1.0)** para uniformidad en datos y errores.</td></tr>
+                        <tr><td>**Versionado de API**</td><td>Por **URI** (ej. <code>/api/v1/productos</code>).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="stack" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">II. Stack Tecnológico (Justificación Políglota)</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr><th>Componente</th><th>Tecnología</th><th>Justificación Estratégica</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>**Microservicio Productos**</td><td>Node.js (Express)</td><td>Ideal para CRUD simple y APIs de I/O intensiva.</td></tr>
+                        <tr><td>**Microservicio Inventario**</td><td>Python (Flask)</td><td>Óptimo para lógica compleja, ML y gestión de datos.</td></tr>
+                        <tr><td>**Base de Datos**</td><td>MySQL (SQL)</td><td>Propiedades **ACID** para consistencia transaccional (futuro ERP).</td></tr>
+                        <tr><td>**Frontend**</td><td>Angular</td><td>Framework robusto, tipado (TypeScript), ideal para mantenimiento a largo plazo.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="patrones" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">III. Patrones de Diseño Centrales</h2>
+            <ul class="space-y-4 text-gray-700">
+                <li>
+                    <p class="font-bold text-lg">1. Patrón Repositorio (Capa <code>models/</code>)</p>
+                    <p>Desacopla la lógica de negocio de la implementación específica de la DB, facilitando la migración.</p>
+                </li>
+                <li>
+                    <p class="font-bold text-lg">2. Patrón de Servicio (Capa <code>logic/</code>)</p>
+                    <p>Contiene y ejecuta todas las reglas de negocio y coordinación. **Responsabilidad Clave**: La lógica del <code>inventory-service</code> es la **única entidad** que puede llamar al <code>products-service</code>.</p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="estructura" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">IV. Estructura y Organización de Directorios</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr><th>Directorio/Archivo</th><th>Destino/Propósito</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>docker-compose.yml</code></td><td>Define y orquesta la ejecución de todos los servicios.</td></tr>
+                        <tr><td><code>.env</code></td><td>Almacena variables de entorno sensibles y de configuración global.</td></tr>
+                        <tr><td><code>backend/middleware/</code></td><td>Contiene funciones de pre/post-procesamiento (Autenticación, Logging, Reintentos).</td></tr>
+                        <tr><td><code>logs/</code></td><td>Destino de los logs estructurados generados.</td></tr>
+                        <tr><td><code>test_results/</code></td><td>Almacena los reportes de cobertura de pruebas (`lcov`).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="resiliencia" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">V. Estrategia de Comunicación y Resiliencia</h2>
+            <h3 class="text-xl font-semibold mt-4 mb-2 text-gray-700">Autenticación Inter-Servicios</h3>
+            <ul class="list-disc list-inside ml-4 text-gray-700">
+                <li>**Mecanismo:** Autenticación Básica por **API Key**.</li>
+                <li>**Flujo:** El emisor incluye la API Key en el **Header <code>X-API-Key</code>**. El receptor la valida con un Middleware.</li>
+            </ul>
+            <h3 class="text-xl font-semibold mt-4 mb-2 text-gray-700">Manejo de Fallos (Resiliencia)</h3>
+            <ul class="list-disc list-inside ml-4 text-gray-700">
+                <li>**Implementación:** Estrategia de **Reintentos (Retry) con Backoff Exponencial**.</li>
+                <li>Se define un **Timeout estricto** (ej. 2 segundos) para evitar bloqueos.</li>
+            </ul>
+        </section>
+
+        <section id="escalabilidad" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">VI. Propuesta de Escalabilidad Futura</h2>
+            <p class="text-gray-700">Se propone la implementación de **Manejo de Eventos Asíncronos** (ej. RabbitMQ o Kafka) para el desacoplamiento. Los servicios se comunicarían mediante eventos (`inventory.updated`), permitiendo que futuros servicios (Notificaciones, Analytics) consuman la información de manera eficiente.</p>
+        </section>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

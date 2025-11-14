@@ -4,7 +4,7 @@ services:
     image: mysql:8.0
     container_name: db_mysql
     restart: always
-    platform: linux/x86_64 # para MAC
+    #platform: linux/x86_64 # para MAC
     environment:
       # Las credenciales son tomadas de forma segura desde el archivo .env
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -30,7 +30,7 @@ services:
   products-service:
     build:
       context: ./backend/products-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: products_service
     restart: always
     env_file:
@@ -41,6 +41,8 @@ services:
     ports:
       # Mapea el puerto del host al puerto del contenedor (ej. 8001)
       - "8001:8001"
+    volumes:
+      - ./logs/products-service:/app/logs:z
     depends_on:
       mysql_db:
         condition: service_healthy
@@ -51,7 +53,7 @@ services:
   products-service-tests:
     build:
       context: ./backend/products-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       target: builder
     container_name: products_service_tests
     env_file:
@@ -70,7 +72,7 @@ services:
   inventory-service:
     build:
       context: ./backend/inventory-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: inventory_service
     restart: always
     env_file:
@@ -81,6 +83,8 @@ services:
     ports:
       # Mapea el puerto del host al puerto del contenedor
       - "8000:8000"
+    volumes:
+      - ./logs/inventory-service:/app/logs:z
     depends_on:
       mysql_db:
         # Espera a que el healthcheck de la BD sea exitoso antes de iniciar
@@ -92,7 +96,7 @@ services:
   inventory-service-tests:
     build:
       context: ./backend/inventory-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       target: builder
     container_name: inventory_service_tests
     # No usamos 'restart: always' porque este contenedor solo debe correr una vez.
@@ -112,7 +116,7 @@ services:
   frontend-service:
     build:
       context: ./frontend/products-manage
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: frontend_service
     restart: always
     ports:
