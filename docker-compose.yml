@@ -127,6 +127,20 @@ services:
       - inventory-service
     networks:
       - linktick_network
+
+  # 5. SERVICIO DE DOCUMENTACIÓN (HTML estático con Nginx)
+  documentation-service:
+    image: nginx:alpine
+    container_name: documentation_service
+    restart: always
+    ports:
+      # Mapea el puerto 80 del contenedor al puerto 8080 del host
+      - "8080:80"
+    volumes:
+      # Monta el directorio de documentos en el directorio web raíz de Nginx
+      - ./documents:/usr/share/nginx/html:ro,z
+    networks:
+      - linktick_network
 # ===================================================
 # DEFINICIÓN DE REDES Y VOLÚMENES
 # ===================================================
