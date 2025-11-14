@@ -1,17 +1,22 @@
 <div class="container">
-  <h1>Inventario de Productos</h1>
+  <div class="header">
+    <h1>Inventario de Productos</h1>
+    <button (click)="openCreateForm()" class="btn btn-primary">Crear Producto</button>
+  </div>
 
   @if (isLoading) {
     <p>Cargando productos...</p>
+  } @else if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
   } @else {
     <table>
       <thead>
         <tr>
           <th>ID</th>
           <th>Nombre</th>
-          <th>Descripción</th>
           <th>Precio</th>
           <th>Stock Disponible</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -19,12 +24,22 @@
           <tr>
             <td>{{ product.attributes.id }}</td>
             <td>{{ product.attributes.name }}</td>
-            <td>{{ product.attributes.description }}</td>
             <td>{{ product.attributes.price | currency }}</td>
             <td>{{ product.attributes.available_stock }}</td>
+            <td class="actions">
+              <button (click)="openEditForm(product)" class="btn btn-secondary">Editar</button>
+              <button (click)="deleteProduct(product.attributes.id)" class="btn btn-danger">Eliminar</button>
+            </td>
           </tr>
         }
       </tbody>
     </table>
   }
 </div>
+
+<app-product-form 
+  [isVisible]="isFormVisible"
+  [product]="selectedProduct"
+  (save)="saveProduct($event)"
+  (close)="closeForm()">
+</app-product-form>

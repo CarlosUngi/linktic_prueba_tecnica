@@ -1,0 +1,31 @@
+@if (isVisible) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h2>{{ isEditMode ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h2>
+      <form [formGroup]="productForm" (ngSubmit)="onSave()">
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input id="name" formControlName="name" type="text">
+          @if (name?.invalid && (name?.dirty || name?.touched)) {
+            <div class="error">El nombre es requerido y debe tener al menos 3 caracteres.</div>
+          }
+        </div>
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" formControlName="description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="price">Precio</label>
+          <input id="price" formControlName="price" type="number" step="0.01">
+           @if (price?.invalid && (price?.dirty || price?.touched)) {
+            <div class="error">El precio es requerido y debe ser mayor a 0.</div>
+          }
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="onClose()" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" [disabled]="productForm.invalid" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

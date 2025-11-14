@@ -10,6 +10,7 @@ export interface ProductAttributes {
   available_stock: number; // Campo añadido por el servicio de inventario
 }
 
+// Interfaz para un objeto de producto individual en el formato JSON:API
 export interface ProductWithStock {
   id: string;
   type: string;
@@ -27,4 +28,19 @@ export interface JsonApiMeta {
 export interface ApiResponse {
   data: ProductWithStock[];
   meta: JsonApiMeta;
+}
+
+// DTO (Data Transfer Object) para crear un producto
+export interface CreateProductDTO {
+  name: string;
+  description?: string;
+  price: number;
+}
+
+// DTO para actualizar un producto
+export interface UpdateProductDTO {
+  name?: string;
+  description?: string;
+  price?: number;
+  is_active?: boolean;
 }
