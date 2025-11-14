@@ -17,7 +17,6 @@ services:
       - ./database/data:/var/lib/mysql:z
       - ./database/init:/docker-entrypoint-initdb.d:z
     networks:
-      # Asigna el servicio a la red interna para la comunicación con los microservicios.
       - linktick_network
   
   # 2. MICROSERVICIO DE PRODUCTOS (Node.js/Express)

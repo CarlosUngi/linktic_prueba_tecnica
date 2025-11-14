@@ -39,10 +39,10 @@ class InventoryRepository:
         Obtiene un registro de inventario por su product_id.
         Retorna el registro de inventario como un diccionario o None si no se encuentra.
         """
-        print('3')
         sql = "SELECT * FROM inventory WHERE product_id = %s"
         conn: Optional[pymysql.connections.Connection] = None
         try:
+            print('aqui conexion')
             conn = self.db_connection.get_connection()
             with conn.cursor() as cursor:
                 cursor.execute(sql, (product_id,))

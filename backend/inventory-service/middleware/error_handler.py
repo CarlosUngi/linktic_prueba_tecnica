@@ -25,7 +25,7 @@ def write_structured_log(log_data: Dict[str, Any]) -> None:
     log_line: str = f"{fecha} {hora} {servicio} {codigo_error} {api_url} {mensaje_error}\n"
 
     # 4. Escritura a Disco (Asumiendo que el volumen /logs está montado en Docker)
-    log_file_path: str = f"logs/inventory-services/{fecha}.log" # YYYY-MM-DD.log
+    log_file_path: str = f"logs/{fecha}.log" # YYYY-MM-DD.log
     try:
         with open(log_file_path, "a") as f:
             f.write(log_line)

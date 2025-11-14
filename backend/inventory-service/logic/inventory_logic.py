@@ -2,6 +2,7 @@ import pymysql
 from typing import Any, Dict, Optional
 
 from models.inventory_table import InventoryRepository
+from db.db_connection import DBConnection
 from exceptions.api_exceptions import NotFoundError, InvalidInputError, ConflictError
 
 class InventoryService:
@@ -10,11 +11,12 @@ class InventoryService:
     Orquesta las operaciones del repositorio y aplica las validaciones de negocio.
     """
 
-    def __init__(self, inventory_repository: InventoryRepository) -> None:
+    def __init__(self, inventory_repository: Optional[InventoryRepository] = None) -> None:
         """
         Inicializa el servicio con una instancia del repositorio de inventario.
+        Si no se proporciona un repositorio, crea uno por defecto.
         """
-        if not isinstance(inventory_repository, InventoryRepository):
+        if inventory_repository is None:
             db_connection = DBConnection()
             self.inventory_repository = InventoryRepository(db_connection)
         else:
@@ -54,7 +56,6 @@ class InventoryService:
         Lanza:
             - NotFoundError: Si no se encuentra un inventario para el producto_id.
         """
-        print('2')
         inventory = self.inventory_repository.get_inventory_by_product_id(product_id)
         if not inventory:
             raise NotFoundError("inventario", product_id)

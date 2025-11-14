@@ -51,7 +51,6 @@ def get_inventory_route(product_id: int):
     """
     Endpoint para obtener el inventario de un producto por su ID.
     """
-    print('1')
     inventory = inventory_service.get_inventory_for_product(product_id)
     return jsonify({
         "data": {

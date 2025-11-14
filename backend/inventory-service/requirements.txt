@@ -6,3 +6,6 @@ requests
 marshmallow
 pytest
 pytest-cov
+DBUtils
+cryptography
+pytest-html
