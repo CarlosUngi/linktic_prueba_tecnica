@@ -1,0 +1,30 @@
+<div class="container">
+  <h1>Inventario de Productos</h1>
+
+  @if (isLoading) {
+    <p>Cargando productos...</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Stock Disponible</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track product.id) {
+          <tr>
+            <td>{{ product.attributes.id }}</td>
+            <td>{{ product.attributes.name }}</td>
+            <td>{{ product.attributes.description }}</td>
+            <td>{{ product.attributes.price | currency }}</td>
+            <td>{{ product.attributes.available_stock }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

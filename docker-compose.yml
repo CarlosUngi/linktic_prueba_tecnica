@@ -66,6 +66,22 @@ services:
         condition: service_healthy
     networks:
       - linktick_network
+
+  # 4. SERVICIO DE FRONTEND (Angular con Nginx)
+  frontend-service:
+    build:
+      context: ./frontend/products-manage
+      dockerfile: Dockerfile
+    container_name: frontend_service
+    restart: always
+    ports:
+      # Mapea el puerto 80 del contenedor al puerto 4200 del host
+      - "4200:80"
+    depends_on:
+      - products-service
+      - inventory-service
+    networks:
+      - linktick_network
 # ===================================================
 # DEFINICIÓN DE REDES Y VOLÚMENES
 # ===================================================
