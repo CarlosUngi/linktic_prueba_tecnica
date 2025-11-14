@@ -134,3 +134,35 @@ class InventoryService:
             product["attributes"]["available_stock"] = stock
 
         return products_data
+
+    def purchase_product(self, product_id: int, quantity: int) -> Dict[str, Any]:
+        """
+        Procesa la compra de un producto, disminuyendo su stock.
+
+        Lanza:
+            - InvalidInputError: Si la cantidad es inválida o no hay suficiente stock.
+            - NotFoundError: Si el producto no se encuentra en el inventario.
+        """
+        if not isinstance(quantity, int) or quantity <= 0:
+            raise InvalidInputError("La cantidad ('quantity') debe ser un número entero positivo.")
+
+        # La lógica atómica en el repositorio se encarga de la race condition.
+        affected_rows = self.inventory_repository.decrease_inventory_stock(product_id, quantity)
+
+        if affected_rows == 0:
+            # Verificamos si el producto existe para dar un error más específico.
+            inventory = self.inventory_repository.get_inventory_by_product_id(product_id)
+            if not inventory:
+                raise NotFoundError("inventario", product_id)
+            
+            # Si existe, el problema fue la falta de stock.
+            raise InvalidInputError(
+                f"No hay suficiente stock para el producto con ID {product_id}. "
+                f"Stock disponible: {inventory.get('available_stock')}, se intentó comprar: {quantity}."
+            )
+
+        return {
+            "product_id": product_id,
+            "quantity_purchased": quantity,
+            "message": "Compra realizada con éxito."
+        }

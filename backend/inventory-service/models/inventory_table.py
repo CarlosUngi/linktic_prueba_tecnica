@@ -117,3 +117,30 @@ class InventoryRepository:
         finally:
             if conn:
                 conn.close()
+
+    def decrease_inventory_stock(self, product_id: int, quantity: int) -> int:
+        """
+        Disminuye la cantidad de stock disponible para un producto.
+        Solo actualiza si hay suficiente stock.
+        Retorna el número de filas afectadas.
+        """
+        sql = """
+            UPDATE inventory
+            SET available_stock = available_stock - %s
+            WHERE product_id = %s AND available_stock >= %s
+        """
+        conn: Optional[pymysql.connections.Connection] = None
+        try:
+            print(f'producto descontar: {product_id} cantidad {quantity}',)
+            conn = self.db_connection.get_connection()
+            with conn.cursor() as cursor:
+                cursor.execute(sql, (quantity, product_id, quantity))
+                conn.commit()
+                return cursor.rowcount
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            raise e
+        finally:
+            if conn:
+                conn.close()

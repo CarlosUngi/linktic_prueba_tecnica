@@ -206,5 +206,97 @@ def get_products_with_stock_route():
     schema = ProductListResponseSchema()
     result = schema.dump(products_with_stock)
 
-    # 3. Retornar el resultado serializado
+        # 3. Retornar el resultado serializado
+
     return jsonify(result), 200
+
+@inventory_bp.route('/purchase', methods=['POST'])
+def purchase_product_route():
+
+        """
+
+        Purchase a product and update stock.
+
+        ---
+
+        tags:
+
+          - Inventory
+
+        parameters:
+
+          - in: body
+
+            name: body
+
+            required: true
+
+            schema:
+
+              type: object
+
+              required:
+
+                - product_id
+
+                - quantity
+
+              properties:
+
+                product_id:
+
+                  type: integer
+
+                  description: The ID of the product to purchase.
+
+                quantity:
+
+                  type: integer
+
+                  description: The quantity to purchase.
+
+        responses:
+
+          200:
+
+            description: Purchase successful.
+
+          400:
+
+            description: Invalid input (e.g., negative quantity, insufficient stock).
+
+            schema:
+
+              $ref: '#/definitions/Error'
+
+          404:
+
+            description: Product not found in inventory.
+
+            schema:
+
+              $ref: '#/definitions/Error'
+
+        """
+
+        data = request.get_json()
+
+        if not data or 'product_id' not in data or 'quantity' not in data:
+
+            raise InvalidInputError("El cuerpo de la solicitud debe contener 'product_id' y 'quantity'.")
+
+    
+
+        product_id = data.get('product_id')
+
+        quantity = data.get('quantity')
+
+    
+
+        result = inventory_service.purchase_product(product_id, quantity)
+
+        
+
+        return jsonify({"data": result}), 200
+
+    

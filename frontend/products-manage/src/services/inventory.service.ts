@@ -20,4 +20,12 @@ export class InventoryService {
     const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
     return this.http.get<ApiResponse>(`${this.apiUrl}/products-with-stock`, { params });
   }
+
+  /**
+   * Realiza la compra de un producto.
+   */
+  purchaseProduct(productId: number, quantity: number): Observable<any> {
+    const body = { product_id: productId, quantity: quantity };
+    return this.http.post(`${this.apiUrl}/purchase`, body);
+  }
 }

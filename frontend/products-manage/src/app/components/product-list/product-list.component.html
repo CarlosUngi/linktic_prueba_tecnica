@@ -1,7 +1,6 @@
 <div class="container">
   <div class="header">
-    <h1>Inventario de Productos</h1>
-    <button (click)="openCreateForm()" class="btn btn-primary">Crear Producto</button>
+    <h1>Carrito de Compras</h1>
   </div>
 
   @if (isLoading) {
@@ -16,7 +15,8 @@
           <th>Nombre</th>
           <th>Precio</th>
           <th>Stock Disponible</th>
-          <th>Acciones</th>
+          <th>Cantidad</th>
+          <th>Acción</th>
         </tr>
       </thead>
       <tbody>
@@ -26,9 +26,22 @@
             <td>{{ product.attributes.name }}</td>
             <td>{{ product.attributes.price | currency }}</td>
             <td>{{ product.attributes.available_stock }}</td>
+            <td>
+              <input 
+                type="number" 
+                class="quantity-input"
+                [(ngModel)]="product.purchaseQuantity"
+                [max]="product.attributes.available_stock"
+                min="0"
+              />
+            </td>
             <td class="actions">
-              <button (click)="openEditForm(product)" class="btn btn-secondary">Editar</button>
-              <button (click)="deleteProduct(product.attributes.id)" class="btn btn-danger">Eliminar</button>
+              <button 
+                (click)="purchase(product)" 
+                class="btn btn-success"
+                [disabled]="!product.purchaseQuantity || product.purchaseQuantity <= 0 || product.purchaseQuantity > product.attributes.available_stock">
+                Comprar
+              </button>
             </td>
           </tr>
         }
@@ -36,10 +49,3 @@
     </table>
   }
 </div>
-
-<app-product-form 
-  [isVisible]="isFormVisible"
-  [product]="selectedProduct"
-  (save)="saveProduct($event)"
-  (close)="closeForm()">
-</app-product-form>
