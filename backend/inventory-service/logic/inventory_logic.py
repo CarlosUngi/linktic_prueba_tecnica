@@ -113,28 +113,24 @@ class InventoryService:
         """
         # 1. Obtener productos del servicio externo
         products_data, _ = get_products_from_service(page, limit)
-        print(products_data)
-        print('salio del servicio externo')
-        
-        products = products_data.get("data", [])
-        if not products:
+
+        if not products_data.get("data"):
             return {"data": [], "meta": products_data.get("meta", {})}
 
         # 2. Extraer IDs de productos
-        product_ids = [int(p["id"]) for p in products]
+        product_ids = [int(p["id"]) for p in products_data["data"]]
 
         # 3. Obtener el inventario para esos IDs
         inventory_list = self.inventory_repository.get_inventory_by_product_ids(product_ids)
-        
-        print('salio de la consulta de inventario')
+
         # 4. Crear un mapa de stock para búsqueda rápida
         stock_map = {item["product_id"]: item["available_stock"] for item in inventory_list}
 
-
         # 5. Enriquecer los productos con la información de stock
-        for product in products:
+        for product in products_data["data"]:
             product_id = int(product["id"])
-            # Asignar stock si existe, de lo contrario, 0
-            product["attributes"]["available_stock"] = stock_map.get(product_id, 0)
+            # Asignar stock si existe, de lo contrario, 0.
+            stock = stock_map.get(product_id, 0)
+            product["attributes"]["available_stock"] = stock
 
         return products_data

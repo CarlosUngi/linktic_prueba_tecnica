@@ -42,13 +42,10 @@ class InventoryRepository:
         sql = "SELECT * FROM inventory WHERE product_id = %s"
         conn: Optional[pymysql.connections.Connection] = None
         try:
-            print('aqui conexion')
             conn = self.db_connection.get_connection()
             with conn.cursor() as cursor:
                 cursor.execute(sql, (product_id,))
                 return cursor.fetchone()
-        except Exception as e:
-            raise e
         finally:
             if conn:
                 conn.close()
@@ -107,19 +104,16 @@ class InventoryRepository:
         if not product_ids:
             return []
         
-        # Prepara la consulta con el número correcto de placeholders
+        # Prepara la consulta de forma segura para evitar SQL Injection
         placeholders = ', '.join(['%s'] * len(product_ids))
-    
         sql = f"SELECT * FROM inventory WHERE product_id IN ({placeholders})"
-        print(sql)
+        
         conn: Optional[pymysql.connections.Connection] = None
         try:
             conn = self.db_connection.get_connection()
             with conn.cursor() as cursor:
-                cursor.execute(sql, product_ids)
+                cursor.execute(sql, tuple(product_ids))
                 return cursor.fetchall()
-        except Exception as e:
-            raise e
         finally:
             if conn:
                 conn.close()

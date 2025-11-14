@@ -4,6 +4,7 @@ from db.db_connection import DBConnection
 from models.inventory_table import InventoryRepository
 from logic.inventory_logic import InventoryService
 from exceptions.api_exceptions import InvalidInputError
+from models.product_schema import ProductListResponseSchema
 
 # ----------------- INYECCIÓN DE DEPENDENCIAS -----------------
 db_connection = DBConnection()
@@ -198,6 +199,12 @@ def get_products_with_stock_route():
     except (TypeError, ValueError):
         raise InvalidInputError("Los parámetros 'page' y 'limit' deben ser números enteros.")
 
+    # 1. Obtener los datos desde la capa de lógica (sigue siendo un diccionario de Python)
     products_with_stock = inventory_service.get_products_with_stock(page, limit)
-    
-    return jsonify(products_with_stock), 200
+
+    # 2. Serializar los datos usando el esquema de Marshmallow
+    schema = ProductListResponseSchema()
+    result = schema.dump(products_with_stock)
+
+    # 3. Retornar el resultado serializado
+    return jsonify(result), 200

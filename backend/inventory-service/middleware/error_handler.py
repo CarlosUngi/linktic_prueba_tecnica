@@ -93,7 +93,7 @@ def register_error_handlers(app: Flask) -> None:
         
         # 1. Construir y loguear el objeto JSON estructurado 
         log_entry: Dict[str, Any] = {
-            "timestamp": datetime.datetime.now(datetime.UTC).isoformat().replace('+00:00', 'Z'),
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z'),
             "level": "ERROR" if error.status_code < 500 else "CRITICAL",
             "service": "inventory-service",
             "http_method": request.method if request else "N/A",

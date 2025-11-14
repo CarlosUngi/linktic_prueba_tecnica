@@ -10,4 +10,7 @@ logs
 node_modules
 coverage
 
+test_results
+test_result
+
 .vscode

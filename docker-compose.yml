@@ -4,6 +4,7 @@ services:
     image: mysql:8.0
     container_name: db_mysql
     restart: always
+    platform: linux/x86_64 # para MAC
     environment:
       # Las credenciales son tomadas de forma segura desde el archivo .env
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
