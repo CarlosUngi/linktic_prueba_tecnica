@@ -25,7 +25,8 @@ COPY . .
 # CRÍTICO: Ejecutar pruebas unitarias y generar el reporte HTML de cobertura
 # Si las pruebas fallan, la construcción de Docker fallará, asegurando que solo se despliegue código testeado.
 # Nota: La ejecución de Pytest funciona ahora debido a la configuración de pythonpath en pytest.ini.
-RUN pytest
+# Ejecutamos SOLO las pruebas unitarias, que no dependen de la BD.
+RUN pytest tests/unit
 
 # --------------------
 # ETAPA 2: PRODUCTION (Runtime)
@@ -40,10 +41,10 @@ ENV FLASK_APP=app.py
 # Establece el directorio de trabajo
 WORKDIR /app
 
-# Instala SÓLO las dependencias de runtime (excluyendo pytest y coverage)
-# Reinstalamos solo las librerías necesarias para ejecutar la app.
+# Instala las dependencias desde requirements.txt y luego elimina las de desarrollo
 COPY requirements.txt .
-RUN pip install --no-cache-dir gunicorn Flask PyMySQL requests marshmallow python-dotenv structlog dbutils cryptography
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip uninstall -y pytest pytest-cov pytest-html
 
 # Copia solo los archivos esenciales para la ejecución (código limpio, sin tests)
 COPY --from=builder /app/app.py app.py
@@ -54,6 +55,7 @@ COPY --from=builder /app/middleware middleware/
 COPY --from=builder /app/models models/
 COPY --from=builder /app/routes routes/
 COPY --from=builder /app/exceptions exceptions/
+COPY --from=builder /app/external_conections external_conections/
 
 # Crea el directorio para los logs, ya que se usará como volumen de Docker Compose
 RUN mkdir /app/logs

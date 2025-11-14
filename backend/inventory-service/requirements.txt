@@ -10,3 +10,5 @@ dbutils
 cryptography
 pytest-html
 flasgger
+gunicorn
+flask-cors

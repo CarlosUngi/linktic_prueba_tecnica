@@ -9,7 +9,7 @@ import { ApiResponse } from '../models/product.model';
 export class InventoryService {
 
   // La URL base utiliza el proxy configurado en proxy.json
-  private apiUrl = '/inventory-services/api/v1/inventory';
+  private apiUrl = 'localhost:8000/api/v1/inventory';
 
   constructor(private http: HttpClient) { }
 

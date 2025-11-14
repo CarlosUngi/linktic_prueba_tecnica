@@ -9,7 +9,11 @@ dotenv.config(); // Carga las variables del .env
 
 const app = express();
 const port = process.env.PRODUCTS_SERVICE_PORT_HOST || 3000;
-
+// Configuración permisiva para desarrollo
+app.use(cors({
+  origin: 'http://localhost:4200', // Permitir al frontend
+  optionsSuccessStatus: 200
+}));
 // Middlewares
 app.use(express.json()); // Para parsear el body de las peticiones JSON
 

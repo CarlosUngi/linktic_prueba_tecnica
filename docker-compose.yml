@@ -30,7 +30,7 @@ services:
   products-service:
     build:
       context: ./backend/products-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: products_service
     restart: always
     env_file:
@@ -46,11 +46,30 @@ services:
         condition: service_healthy
     networks:
       - linktick_network
+
+  # 2.1 SERVICIO DE PRUEBAS PARA PRODUCTS-SERVICE
+  products-service-tests:
+    build:
+      context: ./backend/products-service
+      dockerfile: Dockerfile
+    container_name: products_service_tests
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=mysql_db
+    # Sobrescribimos el comando de inicio para que ejecute todas las pruebas
+    command: ["npm", "test"]
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    networks:
+      - linktick_network
+
   # 3. MICROSERVICIO DE INVENTARIO (Python/Flask)
   inventory-service:
     build:
       context: ./backend/inventory-service
-      dockerfile: dockerFile
+      dockerfile: dockerfile
     container_name: inventory_service
     restart: always
     env_file:
@@ -68,11 +87,30 @@ services:
     networks:
       - linktick_network
 
+  # 3.1 SERVICIO DE PRUEBAS PARA INVENTORY-SERVICE
+  inventory-service-tests:
+    build:
+      context: ./backend/inventory-service
+      dockerfile: Dockerfile
+    container_name: inventory_service_tests
+    # No usamos 'restart: always' porque este contenedor solo debe correr una vez.
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=mysql_db
+    # Sobrescribimos el comando de inicio para que ejecute pytest en lugar de gunicorn
+    command: ["pytest"]
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    networks:
+      - linktick_network
+
   # 4. SERVICIO DE FRONTEND (Angular con Nginx)
   frontend-service:
     build:
       context: ./frontend/products-manage
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: frontend_service
     restart: always
     ports:
