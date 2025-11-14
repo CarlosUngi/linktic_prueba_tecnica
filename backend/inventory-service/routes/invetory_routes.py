@@ -164,3 +164,40 @@ def delete_inventory_route(product_id: int):
     """
     inventory_service.delete_inventory_for_product(product_id)
     return Response(status=204)
+
+
+@inventory_bp.route('/products-with-stock', methods=['GET'])
+def get_products_with_stock_route():
+    """
+    Get a paginated list of products with their stock.
+    ---
+    tags:
+      - Inventory
+    parameters:
+      - in: query
+        name: page
+        type: integer
+        default: 1
+        description: The page number to retrieve.
+      - in: query
+        name: limit
+        type: integer
+        default: 10
+        description: The number of items per page.
+    responses:
+      200:
+        description: A paginated list of products with stock information.
+      503:
+        description: The product service is unavailable.
+        schema:
+          $ref: '#/definitions/Error'
+    """
+    try:
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 10))
+    except (TypeError, ValueError):
+        raise InvalidInputError("Los parámetros 'page' y 'limit' deben ser números enteros.")
+
+    products_with_stock = inventory_service.get_products_with_stock(page, limit)
+    
+    return jsonify(products_with_stock), 200

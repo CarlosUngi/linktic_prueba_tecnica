@@ -27,6 +27,7 @@ router.post('/productos', authApiKey, async (req, res, next) => {
 // 2. Listar todos los productos con paginación (GET /api/v1/productos)
 router.get('/productos', async (req, res, next) => {
     try {
+        console.log('entro al sistema de productos')
         const { page = 1, limit = 10 } = req.query;
         const result = await productosService.listarProductos(parseInt(page), parseInt(limit));
 

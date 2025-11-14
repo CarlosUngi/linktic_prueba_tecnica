@@ -4,7 +4,8 @@
 /database/data
 
 .venv
+venv
 __pycache__
 logs
 node_modules
-
+coverage

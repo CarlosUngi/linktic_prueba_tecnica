@@ -98,3 +98,28 @@ class InventoryRepository:
         finally:
             if conn:
                 conn.close()
+
+    def get_inventory_by_product_ids(self, product_ids: List[int]) -> List[Dict[str, Any]]:
+        """
+        Obtiene los registros de inventario para una lista de product_ids.
+        Retorna una lista de registros de inventario.
+        """
+        if not product_ids:
+            return []
+        
+        # Prepara la consulta con el número correcto de placeholders
+        placeholders = ', '.join(['%s'] * len(product_ids))
+    
+        sql = f"SELECT * FROM inventory WHERE product_id IN ({placeholders})"
+        print(sql)
+        conn: Optional[pymysql.connections.Connection] = None
+        try:
+            conn = self.db_connection.get_connection()
+            with conn.cursor() as cursor:
+                cursor.execute(sql, product_ids)
+                return cursor.fetchall()
+        except Exception as e:
+            raise e
+        finally:
+            if conn:
+                conn.close()

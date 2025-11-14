@@ -20,7 +20,7 @@ describe('ProductosService', () => {
     // Tests para crearNuevoProducto
     describe('crearNuevoProducto', () => {
         it('debe crear un producto si los datos son válidos', async () => {
-            const datos = { nombre: 'Producto Test', precio: 10 };
+            const datos = { name: 'Producto Test', price: 10 };
             productosModel.crearProducto.mockResolvedValue(1);
 
             const result = await productosService.crearNuevoProducto(datos);
@@ -30,12 +30,12 @@ describe('ProductosService', () => {
         });
 
         it('debe lanzar InvalidInputError si los datos son inválidos', async () => {
-            const datos = { nombre: 'P' }; // Nombre muy corto
+            const datos = { name: 'P' }; // Nombre muy corto
             await expect(productosService.crearNuevoProducto(datos)).rejects.toThrow(InvalidInputError);
         });
 
         it('debe lanzar InvalidInputError si el nombre del producto ya existe', async () => {
-            const datos = { nombre: 'Producto Existente', precio: 20 };
+            const datos = { name: 'Producto Existente', price: 20 };
             productosModel.crearProducto.mockRejectedValue({ code: 'ER_DUP_ENTRY' });
 
             await expect(productosService.crearNuevoProducto(datos)).rejects.toThrow(InvalidInputError);
@@ -46,7 +46,7 @@ describe('ProductosService', () => {
     // Tests para obtenerProducto
     describe('obtenerProducto', () => {
         it('debe devolver un producto si existe', async () => {
-            const mockProducto = { id: 1, nombre: 'Test' };
+            const mockProducto = { id: 1, name: 'Test' };
             productosModel.obtenerPorId.mockResolvedValue(mockProducto);
 
             const result = await productosService.obtenerProducto(1);
@@ -64,8 +64,8 @@ describe('ProductosService', () => {
     // Tests para actualizarProducto
     describe('actualizarProducto', () => {
         it('debe actualizar el producto y devolverlo', async () => {
-            const datosUpdate = { precio: 150 };
-            const productoActualizado = { id: 1, nombre: 'Test', precio: 150 };
+            const datosUpdate = { price: 150 };
+            const productoActualizado = { id: 1, name: 'Test', price: 150 };
             productosModel.actualizarProducto.mockResolvedValue(1); // affectedRows = 1
             productosModel.obtenerPorId.mockResolvedValue(productoActualizado);
 
@@ -81,7 +81,7 @@ describe('ProductosService', () => {
 
         it('debe lanzar ResourceNotFoundError si el producto a actualizar no se encuentra', async () => {
             productosModel.actualizarProducto.mockResolvedValue(0); // affectedRows = 0
-            await expect(productosService.actualizarProducto(99, { precio: 100 })).rejects.toThrow(ResourceNotFoundError);
+            await expect(productosService.actualizarProducto(99, { price: 100 })).rejects.toThrow(ResourceNotFoundError);
         });
     });
 

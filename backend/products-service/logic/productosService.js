@@ -7,13 +7,13 @@ const { InvalidInputError, ResourceNotFoundError } = require('../config/errorCod
 
 // Esquema de validación Joi para crear/actualizar (Principio de validación en la capa de negocio)
 const productoSchema = Joi.object({
-    nombre: Joi.string().min(3).max(255).required().messages({
+    name: Joi.string().min(3).max(255).required().messages({
         'string.min': 'El nombre debe tener al menos 3 caracteres.',
         'any.required': 'El nombre es un campo obligatorio.'
     }),
-    descripcion: Joi.string().allow(null, '').optional(),
-    precio: Joi.number().precision(2).positive().required().messages({
-        'number.positive': 'El precio debe ser un valor positivo (chk_precio_positivo).',
+    description: Joi.string().allow(null, '').optional(),
+    price: Joi.number().precision(2).positive().required().messages({
+        'number.positive': 'El precio debe ser un valor positivo (chk_price_positive).',
         'any.required': 'El precio es un campo obligatorio.'
     }),
 });
@@ -58,9 +58,9 @@ class ProductosService {
     async actualizarProducto(id, datos) {
         // Esquema para actualización (al menos un campo es requerido)
         const productoUpdateSchema = Joi.object({
-            nombre: Joi.string().min(3).max(255).optional(),
-            descripcion: Joi.string().allow(null, '').optional(),
-            precio: Joi.number().precision(2).positive().optional(),
+            name: Joi.string().min(3).max(255).optional(),
+            description: Joi.string().allow(null, '').optional(),
+            price: Joi.number().precision(2).positive().optional(),
             is_active: Joi.boolean().optional()
         }).min(1).messages({
             'object.min': 'Debe proporcionar al menos un campo para actualizar.'

@@ -20,7 +20,7 @@ def create_app() -> Flask:
         'version': '1.0.0',
         'description': 'API for managing inventory',
         'uiversion': 3,
-        "specs_route": "/swagger/"
+        "specs_route": "/swagger-inventory/"
     }
     swagger = Swagger(app, template_file='config/swagger.yaml')
 

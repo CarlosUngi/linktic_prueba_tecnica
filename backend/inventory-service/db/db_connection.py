@@ -5,7 +5,7 @@ from dbutils.pooled_db import PooledDB
 
 # Constantes de conexión
 
-MYSQL_HOST = os.environ.get('MYSQL_HOST', '127.0.0.1')
+MYSQL_HOST = os.environ.get('MYSQL_HOST', 'localhost')
 MYSQL_USER = os.environ.get('MYSQL_USER')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
 MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE')
