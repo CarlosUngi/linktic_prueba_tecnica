@@ -26,9 +26,25 @@ services:
       retries: 5
   
   # 2. MICROSERVICIO DE PRODUCTOS (Node.js/Express)
-  # products-service:
-  #   ... (Este servicio está comentado y se agregará más tarde)
-
+  products-service:
+    build:
+      context: ./backend/products-service
+      dockerfile: Dockerfile
+    container_name: products_service
+    restart: always
+    env_file:
+      - .env
+    environment:
+      # Sobrescribe el host de la BD para que apunte al servicio de Docker
+      - DB_HOST=mysql_db
+    ports:
+      # Mapea el puerto del host al puerto del contenedor (ej. 8001)
+      - "8001:8001"
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    networks:
+      - linktick_network
   # 3. MICROSERVICIO DE INVENTARIO (Python/Flask)
   inventory-service:
     build:

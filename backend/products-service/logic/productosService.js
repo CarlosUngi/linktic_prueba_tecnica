@@ -55,7 +55,36 @@ class ProductosService {
         return productosModel.listarProductos({ limite, offset });
     }
 
-    // Tarea Pendiente: implementar actualizarProducto y eliminarProducto
+    async actualizarProducto(id, datos) {
+        // Esquema para actualización (al menos un campo es requerido)
+        const productoUpdateSchema = Joi.object({
+            nombre: Joi.string().min(3).max(255).optional(),
+            descripcion: Joi.string().allow(null, '').optional(),
+            precio: Joi.number().precision(2).positive().optional(),
+            is_active: Joi.boolean().optional()
+        }).min(1).messages({
+            'object.min': 'Debe proporcionar al menos un campo para actualizar.'
+        });
+
+        const { error } = productoUpdateSchema.validate(datos, { abortEarly: false });
+        if (error) {
+            throw new InvalidInputError("Datos de actualización inválidos.", error.details);
+        }
+
+        const affectedRows = await productosModel.actualizarProducto(id, datos);
+        if (affectedRows === 0) {
+            throw new ResourceNotFoundError(`Producto con ID ${id} no encontrado para actualizar.`);
+        }
+        return this.obtenerProducto(id);
+    }
+
+    async eliminarProducto(id) {
+        const affectedRows = await productosModel.eliminarProducto(id);
+        if (affectedRows === 0) {
+            throw new ResourceNotFoundError(`Producto con ID ${id} no encontrado para eliminar.`);
+        }
+        return affectedRows;
+    }
 }
 
 module.exports = new ProductosService();

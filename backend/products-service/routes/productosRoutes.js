@@ -66,16 +66,29 @@ router.get('/productos/:id', async (req, res, next) => {
 // Protegida por authApiKey
 router.delete('/productos/:id', authApiKey, async (req, res, next) => {
     try {
-        const affectedRows = await productosService.eliminarProducto(req.params.id);
-        if (affectedRows === 0) {
-            throw new ResourceNotFoundError(`Producto con ID ${req.params.id} no encontrado para eliminar.`);
-        }
+        await productosService.eliminarProducto(req.params.id);
         res.status(204).send(); // HTTP 204 No Content
     } catch (error) {
         next(error);
     }
 });
 
-// Tarea Pendiente: Implementar PUT/PATCH /productos/:id
+// 5. Actualizar un producto por ID (PUT /api/v1/productos/:id)
+// Protegida por authApiKey
+router.put('/productos/:id', authApiKey, async (req, res, next) => {
+    try {
+        const productoActualizado = await productosService.actualizarProducto(req.params.id, req.body);
+        res.status(200).json({
+            data: {
+                type: 'productos',
+                id: productoActualizado.id.toString(),
+                attributes: productoActualizado
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 module.exports = router;

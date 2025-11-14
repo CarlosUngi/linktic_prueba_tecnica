@@ -22,4 +22,6 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Puerto de Escucha
-app.listen(port, () => console.log(`Products Service corriendo en puerto ${port} y Swagger en /api-docs`));
+const server = app.listen(port, () => console.log(`Products Service corriendo en puerto ${port} y Swagger en /api-docs`));
+
+module.exports = { app, server };

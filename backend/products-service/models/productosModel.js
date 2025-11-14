@@ -8,7 +8,7 @@ class ProductosModel {
     // Tarea: Buscar un producto por su PK.
     async obtenerPorId(id) {
         const pool = await poolPromise;
-        const query = 'SELECT * FROM productos WHERE id = ? AND activo = 1;';
+        const query = 'SELECT * FROM productos WHERE id = ? AND is_active = 1;';
         const [rows] = await pool.query(query, [id]);
         return rows[0] || null;
     }
@@ -19,10 +19,10 @@ class ProductosModel {
         const pool = await poolPromise;
         // Importante: No usar ORDER BY aquí para evitar errores de índice (firestore instruction).
         // Se recomienda ordenar en JS si es necesario.
-        const query = 'SELECT * FROM productos WHERE activo = 1 LIMIT ? OFFSET ?;';
+        const query = 'SELECT * FROM productos WHERE is_active = 1 LIMIT ? OFFSET ?;';
         const [rows] = await pool.query(query, [limite, offset]);
 
-        const countQuery = 'SELECT COUNT(*) as total FROM productos WHERE activo = 1;';
+        const countQuery = 'SELECT COUNT(*) as total FROM productos WHERE is_active = 1;';
         const [countRows] = await pool.query(countQuery);
         const total = countRows[0].total;
 
@@ -42,12 +42,29 @@ class ProductosModel {
     // Tarea: Actualizar el campo 'activo' a 0.
     async eliminarProducto(id) {
         const pool = await poolPromise;
-        const query = 'UPDATE productos SET activo = 0 WHERE id = ?;';
+        const query = 'UPDATE productos SET is_active = 0 WHERE id = ?;';
         const [result] = await pool.query(query, [id]);
         return result.affectedRows; // Retorna 1 si se eliminó (soft delete)
     }
 
     // Tarea Pendiente: implementar actualizarProducto(id, datos)
+    async actualizarProducto(id, datos) {
+        const pool = await poolPromise;
+        
+        const fields = Object.keys(datos);
+        const values = Object.values(datos);
+        
+        if (fields.length === 0) {
+            return 0; // No hay nada que actualizar
+        }
+
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        
+        const query = `UPDATE productos SET ${setClause} WHERE id = ?;`;
+        
+        const [result] = await pool.query(query, [...values, id]);
+        return result.affectedRows;
+    }
 
 }
 
